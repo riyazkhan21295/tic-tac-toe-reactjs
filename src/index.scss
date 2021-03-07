@@ -51,6 +51,10 @@ ul {
     &:focus {
         outline: none;
     }
+
+    &--winner {
+        background: yellowgreen;
+    }
 }
 
 .kbd-navigation .square:focus {

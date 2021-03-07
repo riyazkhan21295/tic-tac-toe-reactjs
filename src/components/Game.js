@@ -78,12 +78,19 @@ class Game extends React.Component {
         let status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
 
         const winner = calculateWinner(current.squares);
-        winner && (status = `Winner: ${winner}`);
+        winner && (status = `Winner: ${winner.name}`);
+
+        let winnerColumnsIndex = [null, null, null];
+        winner && (winnerColumnsIndex = winner.columnsIndex);
 
         return (
             <div className='game'>
                 <div className='game__board'>
-                    <Board squares={current.squares} onSquareClick={i => this.handleSquareClick(i)} />
+                    <Board
+                        squares={current.squares}
+                        onSquareClick={i => this.handleSquareClick(i)}
+                        winnerColumnsIndex={winnerColumnsIndex}
+                    />
                 </div>
                 <div className='game__info'>
                     <div>{status}</div>
@@ -119,7 +126,10 @@ function calculateWinner(squares) {
         const [a, b, c] = lines[i];
 
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return {
+                name: squares[a],
+                columnsIndex: [a, b, c],
+            };
         }
     }
 
