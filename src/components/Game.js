@@ -21,6 +21,7 @@ class Game extends React.Component {
             ],
             xIsNext: true,
             stepNumber: 0,
+            isAscToggle: true,
         };
     }
 
@@ -64,6 +65,12 @@ class Game extends React.Component {
         });
     }
 
+    toggleMoves() {
+        this.setState({
+            isAscToggle: !this.state.isAscToggle,
+        });
+    }
+
     render() {
         const { history } = this.state;
         const current = history[this.state.stepNumber];
@@ -80,8 +87,13 @@ class Game extends React.Component {
                 </div>
                 <div className='game__info'>
                     <div>{status}</div>
+                    {history.length > 1 && <button onClick={() => this.toggleMoves()}>Toggle</button>}
                     <ol>
-                        <Moves history={history} jumpTo={move => this.jumpTo(move)} />
+                        <Moves
+                            history={history}
+                            jumpTo={move => this.jumpTo(move)}
+                            isAscToggle={this.state.isAscToggle}
+                        />
                     </ol>
                 </div>
             </div>
