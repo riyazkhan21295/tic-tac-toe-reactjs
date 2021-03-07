@@ -54,4 +54,8 @@ ul {
 .kbd-navigation .square:focus {
   background: #ddd;
 }
+
+.btn.selected {
+  font-weight: 700;
+}
 /*# sourceMappingURL=index.css.map */

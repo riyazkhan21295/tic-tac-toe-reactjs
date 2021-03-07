@@ -2,6 +2,7 @@ import React from 'react';
 
 // COMPONENTS
 import Board from './Board';
+import Moves from './Moves';
 
 class Game extends React.Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class Game extends React.Component {
                         col: null,
                         row: null,
                     },
+                    isStepSelected: false,
                 },
             ],
             xIsNext: true,
@@ -47,8 +49,18 @@ class Game extends React.Component {
 
     jumpTo(step) {
         this.setState({
+            history: this.updateIsStepSelected(step),
             stepNumber: step,
             xIsNext: step % 2 === 0 ? true : false,
+        });
+    }
+
+    updateIsStepSelected(step) {
+        return this.state.history.map((obj, index) => {
+            return {
+                ...obj,
+                isStepSelected: index === +step ? true : false,
+            };
         });
     }
 
@@ -59,24 +71,7 @@ class Game extends React.Component {
         let status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
 
         const winner = calculateWinner(current.squares);
-        if (winner) {
-            status = `Winner: ${winner}`;
-        }
-
-        const moves = history.map((step, move) => {
-            const {
-                locations: { col, row },
-            } = step;
-
-            let desc = 'Go to game start';
-            move && (desc = `Go to move #${move} (${col}, ${row})`);
-
-            return (
-                <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
-                </li>
-            );
-        });
+        winner && (status = `Winner: ${winner}`);
 
         return (
             <div className='game'>
@@ -85,7 +80,9 @@ class Game extends React.Component {
                 </div>
                 <div className='game__info'>
                     <div>{status}</div>
-                    <ol>{moves}</ol>
+                    <ol>
+                        <Moves history={history} jumpTo={move => this.jumpTo(move)} />
+                    </ol>
                 </div>
             </div>
         );
