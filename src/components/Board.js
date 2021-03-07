@@ -4,30 +4,40 @@ import React from 'react';
 import Square from './Square';
 
 class Board extends React.Component {
+    createBoard(columns, rows) {
+        const boardRows = [];
+
+        for (let i = 0; i < columns * rows; i++) {
+            if (i % columns === 0) {
+                const row = (
+                    <div className='board__row' key={i}>
+                        {this.createColumns(i, i + columns)}
+                    </div>
+                );
+
+                boardRows.push(row);
+            }
+        }
+
+        return boardRows;
+    }
+
+    createColumns(startColumnDigit, endColumnDigit) {
+        const boardColumns = [];
+
+        for (let i = startColumnDigit; i < endColumnDigit; i++) {
+            boardColumns.push(this.renderSquare(i));
+        }
+
+        return boardColumns;
+    }
+
     renderSquare(i) {
         return <Square value={this.props.squares[i]} onSquareClick={() => this.props.onSquareClick(i)} />;
     }
 
     render() {
-        return (
-            <div className='board'>
-                <div className='board__row'>
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className='board__row'>
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className='board__row'>
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        );
+        return <div className='board'>{this.createBoard(3, 3)}</div>;
     }
 }
 
