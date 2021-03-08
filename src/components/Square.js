@@ -1,5 +1,6 @@
 function Square(props) {
-    const isNullPresent = props.winnerColumnsIndex.filter(columnIndex => !columnIndex).length > 0 ? true : false;
+    const isNullPresent =
+        props.winnerColumnsIndex.filter(columnIndex => columnIndex === null).length > 0 ? true : false;
     const isColumnIndexPresent =
         props.winnerColumnsIndex.filter(columnIndex => columnIndex === +props.columnIndex).length > 0 ? true : false;
 

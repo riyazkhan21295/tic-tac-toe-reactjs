@@ -8,7 +8,7 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.initialState = {
             history: [
                 {
                     squares: Array(9).fill(null),
@@ -22,6 +22,10 @@ class Game extends React.Component {
             xIsNext: true,
             stepNumber: 0,
             isAscToggle: true,
+        };
+
+        this.state = {
+            ...this.initialState,
         };
     }
 
@@ -71,17 +75,39 @@ class Game extends React.Component {
         });
     }
 
+    resetGame() {
+        this.setState({
+            ...this.initialState,
+        });
+    }
+
     render() {
         const { history } = this.state;
         const current = history[this.state.stepNumber];
 
-        let status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
-
-        const winner = calculateWinner(current.squares);
-        winner && (status = `Winner: ${winner.name}`);
+        let status = <span>Next player: {this.state.xIsNext ? 'X' : 'O'}</span>;
 
         let winnerColumnsIndex = [null, null, null];
-        winner && (winnerColumnsIndex = winner.columnsIndex);
+        const winner = calculateWinner(current.squares);
+        if (winner) {
+            const { name, columnsIndex } = winner;
+
+            winnerColumnsIndex = columnsIndex;
+            status = <span style={{ fontWeight: 700 }}>Winner: {name}</span>;
+        }
+
+        const isDraw = checkIsGameDraw(history[history.length - 1].squares);
+        if (isDraw) {
+            status = (
+                <>
+                    <span>Game Draw</span>
+                    <br />
+                    <button onClick={() => this.resetGame()} style={{ marginBottom: '1rem' }}>
+                        Play Again
+                    </button>
+                </>
+            );
+        }
 
         return (
             <div className='game'>
@@ -115,7 +141,7 @@ function calculateWinner(squares) {
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
-        [0, 3, 4],
+        [0, 3, 6],
         [1, 4, 7],
         [2, 5, 8],
         [0, 4, 8],
@@ -143,6 +169,15 @@ function calculateLocation(index) {
     const row = Math.floor(index / TOTAL_COLUMNS) + 1;
 
     return { col, row };
+}
+
+function checkIsGameDraw(squares) {
+    if (!squares) return false;
+
+    const winner = calculateWinner(squares);
+    const isNullPresent = squares.filter(square => !square).length > 0 ? true : false;
+
+    return !winner && !isNullPresent ? true : false;
 }
 
 export default Game;
